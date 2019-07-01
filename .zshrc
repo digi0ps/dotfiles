@@ -1,25 +1,35 @@
 # Exports
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH="/usr/local/opt/icu4c/bin:$PATH"
-export PATH="/usr/local/opt/icu4c/sbin:$PATH"
+export PATH=$PATH:$HOME/bin:/usr/local/bin:/usr/local/opt/icu4c/bin:/usr/local/opt/icu4c/sbin:/usr/local/opt/mysql@5.6/bin
+export PATH=$PATH:/usr/local/Cellar/python/3.7.3/Frameworks/Python.framework/Versions/3.7/bin
+export PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 export GIT_TOKEN="9dfbd1f8b5ffcb8d184be18d12dd348ba9898bb0"
+export LDFLAGS="-L/usr/local/opt/mysql@5.6/lib"
+export CPPFLAGS="-I/usr/local/opt/mysql@5.6/include"
+export DRONE_SERVER="https://drone.razorpay.com"
+export DRONE_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXh0IjoiZGlnaTBwcyIsInR5cGUiOiJ1c2VyIn0.b8SVbEwJcRFAvU2eSQ_TipoiiO--x5pvLCOD7mZtEJA"
 
 # Aliases
 alias sourcebash="source ~/.bash_profile"
 alias composer="php /usr/local/bin/composer.phar"
 alias zshconfig="code ~/.zshrc"
 alias sourcezsh="source ~/.zshrc"
+alias pip="python3 -m pip"
+alias http="http-prompt"
+alias c="code ."
+alias x="exit"
+alias s="npm start"
+alias b="npm run build"
 
 # CUSTOM FUNCTIONS
 # mkcd - mkdir and jump into the created directory
-function mkcd(){
+function mkcd() {
     mkdir $1;
     cd $1;
     return 0;
 }
 
 # dotcommit - copy all dotfiles into dotfiles repo and commit
-function dotcommit(){
+function dotcommit() {
     DOT_FILES_REPO="$HOME/code/dotfiles/";
     cd $DOT_FILES_REPO;
     for file in ".bash_profile" ".hyper.js" ".zshrc";
@@ -32,6 +42,14 @@ function dotcommit(){
 
 # Autojump
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
+# ZSH Syntax Highlighting
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/sriram/.oh-my-zsh"
@@ -97,7 +115,7 @@ HIST_STAMPS="dd/mm/yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git git-extras)
 
 source $ZSH/oh-my-zsh.sh
 

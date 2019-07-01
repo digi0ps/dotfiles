@@ -44,7 +44,7 @@ module.exports = {
 
     // terminal background color
     // opacity is only supported on macOS
-    backgroundColor: '#000',
+    backgroundColor: 'rgba(10, 10, 10, 0.9)',
 
     // terminal selection color
     selectionColor: 'rgba(248,28,229,0.3)',
@@ -89,7 +89,7 @@ module.exports = {
       lightBlue: '#6A76FB',
       lightMagenta: '#FD7CFC',
       lightCyan: '#68FDFE',
-      lightWhite: '#FFFFFF'
+      lightWhite: '#FFFFFF',
     },
 
     // the shell to run when spawning a new session (i.e. /usr/local/bin/fish)
@@ -132,8 +132,14 @@ module.exports = {
     // for advanced config flags please refer to https://hyper.is/#cfg
 
     hyperline: {
-      plugins: ['cpu', 'memory', 'battery', 'spotify']
-    }
+      plugins: ['cpu', 'memory', 'battery', 'spotify'],
+    },
+
+    hyperTransparent: {
+      backgroundColor: '#9E9E9E',
+      opacity: 0.2,
+      vibrancy: 'ultra-dark', // ['', 'dark', 'medium-light', 'ultra-dark']
+    },
   },
 
   // a list of plugins to fetch and install from npm
@@ -144,7 +150,6 @@ module.exports = {
   //   `project#1.0.1`
   plugins: [
     'hypercwd',
-    'hyper-one-dark',
     'gitrocket',
     'hyperline',
     'hyperterm-paste',
@@ -152,7 +157,8 @@ module.exports = {
     'hyperterm-close-on-left',
     'hyper-tab-icons',
     'hyper-dark-scrollbar',
-    'space-pull'
+    'space-pull',
+    'hyper-transparent',
   ],
 
   // in development, you can create a directory under
@@ -163,5 +169,5 @@ module.exports = {
   keymaps: {
     // Example
     // 'window:devtools': 'cmd+alt+o',
-  }
-}
+  },
+};
