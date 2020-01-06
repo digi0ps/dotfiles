@@ -1,31 +1,89 @@
-# Exports
-export PATH=$PATH:$HOME/bin:/usr/local/bin:/usr/local/opt/icu4c/bin:/usr/local/opt/icu4c/sbin:/usr/local/opt/mysql@5.6/bin
-export PATH=$PATH:/usr/local/Cellar/python/3.7.3/Frameworks/Python.framework/Versions/3.7/bin
-export PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
-export GIT_TOKEN="9dfbd1f8b5ffcb8d184be18d12dd348ba9898bb0"
-export LDFLAGS="-L/usr/local/opt/mysql@5.6/lib"
-export CPPFLAGS="-I/usr/local/opt/mysql@5.6/include"
-export DRONE_SERVER="https://drone.razorpay.com"
-export DRONE_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXh0IjoiZGlnaTBwcyIsInR5cGUiOiJ1c2VyIn0.b8SVbEwJcRFAvU2eSQ_TipoiiO--x5pvLCOD7mZtEJA"
+# PATH
+
+export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
+path=(~/bin ~/.composer/vendor/bin /usr/local/sbin ~/.config/yarn/global/node_modules/.bin $path)
+export PATH="/usr/local/opt/ruby/bin:$PATH"
+export PATH="/usr/local/opt/node@10/bin:$PATH"
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+export GOPATH=$HOME/code/go
 
 # Aliases
-alias sourcebash="source ~/.bash_profile"
-alias composer="php /usr/local/bin/composer.phar"
-alias zshconfig="code ~/.zshrc"
+
+alias zshconfig="subl ~/.zshrc"
 alias sourcezsh="source ~/.zshrc"
-alias pip="python3 -m pip"
+alias ohmyzsh="subl ~/.oh-my-zsh"
+alias manage="python3 manage.py"
+alias runserver="python3 manage.py runserver"
 alias http="http-prompt"
 alias c="code ."
 alias x="exit"
 alias s="npm start"
 alias b="npm run build"
 
-# CUSTOM FUNCTIONS
-# mkcd - mkdir and jump into the created directory
+# Functions
+
 function mkcd() {
-    mkdir $1;
-    cd $1;
-    return 0;
+mkdir $1;
+cd $1
+}
+
+function gitrebase() {
+    git pull --rebase upstream $1;
+}
+
+function gitpr() {
+    if [[ -z $1 ]]; then
+        print "Enter pull_id and branch_name"
+        print "gitpr pull_id branch_name"
+        return 1
+    fi
+    if [[ -z $2 ]]; then
+        print "Enter branch_name"
+        print "gitpr $1 branch_name"
+        return 1
+    fi
+    git fetch upstream pull/$1/head:$2
+    git checkout $2
+}
+
+function gitpull() {
+    baseurl='https://github.com/digi0ps/Memex/pull/new/'
+    gbranch=$(git branch | grep "*" | cut -d " " -f 2)
+    tput setaf 2; tput smul; tput bel; echo $baseurl$gbranch;
+    tput sgr0; echo "Press enter to open it in a new tab."
+    read
+    open $baseurl$gbranch
+    return 1
+}
+
+# Git add all, commit and maybe push
+function gam() {
+    if [[ -z $1 ]]; then
+        print "Help: gam (-p|--push)? message"
+        return 1
+    fi
+
+    if [[ $1 = "-p" || $1 = "--push" ]]; then
+        if [[ -z $2 ]]; then
+            print "Enter commit message."
+            print "Help: gam (-p|--push)? message"
+        else
+                git add .
+                git commit -m $2
+                git push origin master
+        fi
+    else
+        git add .
+        git commit -m $1
+    fi
+}
+
+function gitcommits() {
+    gituser=$(git config --global user.name)
+    gitbranch=$(git branch | grep "*")
+    commits=$(git log | grep $gituser | wc -l)
+    echo "Number of commits in $gitbranch: $commits"
 }
 
 # dotcommit - copy all dotfiles into dotfiles repo and commit
@@ -40,44 +98,20 @@ function dotcommit() {
     ls -a;
 }
 
-# Autojump
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
-# ZSH Syntax Highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# NVM
-export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
-
-# Path to your oh-my-zsh installation.
-export ZSH="/Users/sriram/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="amuse"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
-# If set to an empty array, this variable will have no effect.
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 # export UPDATE_ZSH_DAYS=13
@@ -92,7 +126,7 @@ ZSH_THEME="robbyrussell"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
+# COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -101,37 +135,40 @@ COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 HIST_STAMPS="dd/mm/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git git-extras)
+plugins=(
+  git
+  autojump
+)
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
 
-# export MANPATH="/usr/local/man:$MANPATH"
+# Syntax highlighting
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+# Set Spaceship ZSH as a prompt
+# autoload -U promptinit; promptinit
+# prompt spaceship
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
+source /usr/local/bin/virtualenvwrapper.sh
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/digiops/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/digiops/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/digiops/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/digiops/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
