@@ -2,16 +2,21 @@
 
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
 path=(~/bin ~/.composer/vendor/bin /usr/local/sbin ~/.config/yarn/global/node_modules/.bin $path)
-export PATH="/usr/local/opt/ruby/bin:$PATH"
-export PATH="/usr/local/opt/node@10/bin:$PATH"
+export PATH=/usr/local/opt/ruby/bin:$PATH
+export PATH=/usr/local/opt/node@10/bin:$PATH
+export PATH=/usr/local/opt/postgresql@9.6/bin:$PATH
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 export GOPATH=$HOME/code/go
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$ANDROID_HOME/tools:$PATH 
+export PATH=$ANDROID_HOME/platform-tools:$PATH
+export GOJEK_HOME=$HOME/code/gojek
 
 # Aliases
 
-alias zshconfig="subl ~/.zshrc"
-alias sourcezsh="source ~/.zshrc"
+alias ez="code ~/.zshrc"
+alias sz="source ~/.zshrc"
 alias ohmyzsh="subl ~/.oh-my-zsh"
 alias manage="python3 manage.py"
 alias runserver="python3 manage.py runserver"
@@ -20,7 +25,7 @@ alias c="code ."
 alias x="exit"
 alias s="npm start"
 alias b="npm run build"
-
+alias dka="docker kill $(docker ps -q);docker ps"
 # Functions
 
 function mkcd() {
@@ -47,14 +52,32 @@ function gitpr() {
     git checkout $2
 }
 
-function gitpull() {
-    baseurl='https://github.com/digi0ps/Memex/pull/new/'
-    gbranch=$(git branch | grep "*" | cut -d " " -f 2)
-    tput setaf 2; tput smul; tput bel; echo $baseurl$gbranch;
-    tput sgr0; echo "Press enter to open it in a new tab."
-    read
-    open $baseurl$gbranch
-    return 1
+function goclone() {
+    if [[ -z $1 ]]; then
+        print "Error: Team Name, Repo Name missing"
+        print "Usage: goclone team_name repo_name"
+        return 1
+    fi
+    if [[ -z $2 ]]; then
+        print "Error: Repo Name missing"
+        print "Usage: goclone team_name repo_name"
+        return 1
+    fi
+    
+    CUR_DIR=$(pwd)
+    mkdir -p "$GOJEK_HOME/$1"
+    cd "$GOJEK_HOME/$1"
+    git clone "git@source.golabs.io:$1/$2"
+
+    if [[ $? == 0 ]]; then
+        cd $2
+    else
+        cd $CUR_DIR
+
+        if [ -z "$(ls $GOJEK_HOME/$1)" ]; then
+            rm -rf $GOJEK_HOME/$1
+        fi
+    fi
 }
 
 # Git add all, commit and maybe push
@@ -79,11 +102,19 @@ function gam() {
     fi
 }
 
+# Number of commits commited by that user in the current branch
 function gitcommits() {
     gituser=$(git config --global user.name)
     gitbranch=$(git branch | grep "*")
     commits=$(git log | grep $gituser | wc -l)
     echo "Number of commits in $gitbranch: $commits"
+}
+
+# Switch to the last branch
+function glbr() {
+    lastbranch=$(git reflog | grep -om 1 -E "moving from (.+)\s" | awk '//{print $3}')
+    echo "<< Switching to $lastbranch >>"
+    git checkout $lastbranch
 }
 
 # dotcommit - copy all dotfiles into dotfiles repo and commit
@@ -98,8 +129,35 @@ function dotcommit() {
     ls -a;
 }
 
+function box() {
+    if [[ -z $1 ]]; then
+        echo "Box name is needed..."
+        return;
+    fi;
+
+    BOX=$1;
+
+    if [[ $1 == "-h" ]]; then
+        echo "History Mode"
+        REGEX_FOR_BOX="[gp][-a-z]+\d\d$"
+        BOX_NAME=$(history | grep -oE "$REGEX_FOR_BOX" --color=none | fzf )
+        echo $BOX_NAME;
+        BOX=$BOX_NAME
+    fi;
+
+    ssh sriram.r.aux@$BOX
+}
+
+# center - center a piece of text
+function center(){
+  textsize=${#1}
+  width=$(tput cols)
+  span=$((($width + $textsize) / 2))
+  printf "%${span}s\n" "$1"
+}
+
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="amuse"
+# ZSH_THEME="amuse"
 
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
@@ -161,12 +219,29 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # autoload -U promptinit; promptinit
 # prompt spaceship
 
+# VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
+# source /Users/digi0ps/Library/Python/3.7/bin/virtualenvwrapper.sh
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/digiops/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/digiops/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+# # The next line updates PATH for the Google Cloud SDK.
+# if [ -f '/Users/digiops/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/digiops/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
 # if [ -f '/Users/digiops/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/digiops/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+# Starship
+if [[ $(starship --version) ]]; then
+    eval "$(starship init zsh)"
+fi
+
+if [[ $(rbenv --version) ]]; then
+    eval "$(rbenv init -)"
+fi
+
+
+
+eval $(thefuck --alias)
+
+figlet -ck digi0ps | lolcat -d 1 -s 30
+center "Welcome to the throne"
