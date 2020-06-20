@@ -90,7 +90,7 @@ function gitcommits() {
 function dotcommit() {
     DOT_FILES_REPO="$HOME/code/dotfiles/";
     cd $DOT_FILES_REPO;
-    for file in ".bash_profile" ".hyper.js" ".zshrc";
+    for file in ".bash_profile" ".hyper.js" ".zshrc" ".vimrc";
     do;
         echo "Backing up $file to $DOT_FILES_REPO";
         cp $HOME/$file .;
@@ -161,14 +161,12 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # autoload -U promptinit; promptinit
 # prompt spaceship
 
-VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-source /usr/local/bin/virtualenvwrapper.sh
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/digiops/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/digiops/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/digiops/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/digiops/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+# if [ -f '/Users/digiops/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/digiops/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
