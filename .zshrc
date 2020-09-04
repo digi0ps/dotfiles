@@ -1,20 +1,23 @@
 # PATH
-
 export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
 path=(~/bin ~/.composer/vendor/bin /usr/local/sbin ~/.config/yarn/global/node_modules/.bin $path)
 export PATH=/usr/local/opt/ruby/bin:$PATH
 export PATH=/usr/local/opt/node@10/bin:$PATH
 export PATH=/usr/local/opt/postgresql@9.6/bin:$PATH
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+# GoLang
+export GOROOT=/usr/local/Cellar/go/1.14.6/libexec
 export GOPATH=$HOME/code/go
+export PATH=$PATH:$GOROOT/bin
+export PATH=$PATH:$GOPATH/bin
+# Android
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$ANDROID_HOME/tools:$PATH 
 export PATH=$ANDROID_HOME/platform-tools:$PATH
+# Paths
+export ZSH=$HOME/.oh-my-zsh
 export GOJEK_HOME=$HOME/code/gojek
 
 # Aliases
-
 alias ez="code ~/.zshrc"
 alias sz="source ~/.zshrc"
 alias ohmyzsh="subl ~/.oh-my-zsh"
@@ -25,9 +28,12 @@ alias c="code ."
 alias x="exit"
 alias s="npm start"
 alias b="npm run build"
-alias dka="docker kill $(docker ps -q);docker ps"
-# Functions
+alias lf="cat .lein-failures"
+alias psql9="/usr/local/opt/postgresql@9.6/bin/psql"
+alias psql11="/usr/local/opt/postgresql@11/bin/psql"
+alias rr="cd $OLDPWD"
 
+# Functions
 function mkcd() {
 mkdir $1;
 cd $1
@@ -117,6 +123,10 @@ function glbr() {
     git checkout $lastbranch
 }
 
+# Kill all docker instances
+function killdocks() {
+    docker kill $(docker ps -q)
+}
 # dotcommit - copy all dotfiles into dotfiles repo and commit
 function dotcommit() {
     DOT_FILES_REPO="$HOME/code/dotfiles/";
@@ -147,6 +157,8 @@ function box() {
 
     ssh sriram.r.aux@$BOX
 }
+
+function 
 
 # center - center a piece of text
 function center(){
@@ -245,3 +257,6 @@ eval $(thefuck --alias)
 
 figlet -ck digi0ps | lolcat -d 1 -s 30
 center "Welcome to the throne"
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
