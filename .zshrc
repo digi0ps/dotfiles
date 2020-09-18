@@ -224,7 +224,8 @@ source $ZSH/oh-my-zsh.sh
 
 
 # Syntax highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+SH_PATH="/usr/local/share/zsh-syntax-highlighting"
+test -e "${SH_PATH}/zsh-syntax-highlighting.zsh" &&     source "${SH_PATH}/zsh-syntax-highlighting.zsh"
 
 
 # Set Spaceship ZSH as a prompt
